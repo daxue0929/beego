@@ -83,12 +83,12 @@ type LifeCycleCallback interface {
 	BeforeShutdown(app *HttpServer)
 }
 
-// Run beego application.
+// Run beego application. 真正应用启动的地方
 func (app *HttpServer) Run(addr string, mws ...MiddleWare) {
 	initBeforeHTTPRun()
 
 	// init...
-	app.initAddr(addr)
+	app.initAddr(addr) // 把地址再次处理一下, 赋值给Config配置
 	app.Handlers.Init()
 
 	addr = app.Cfg.Listen.HTTPAddr

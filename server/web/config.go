@@ -438,6 +438,7 @@ type LogConfig struct {
 }
 
 var (
+	// BConfig 这是一个包级别的属性, 默认的应用配置,并且在init()方法中,对这个属性进行了初始化
 	// BConfig is the default config for Application
 	BConfig *Config
 	// AppConfig is the instance of Config, store the config information from file
@@ -520,6 +521,7 @@ func defaultRecoverPanic(ctx *context.Context, cfg *Config) {
 	}
 }
 
+// 默认配置具体是在这里指定的
 func newBConfig() *Config {
 	res := &Config{
 		AppName:             "beego",

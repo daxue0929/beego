@@ -84,10 +84,12 @@ type adminApp struct {
 
 // Run start Beego admin
 func (admin *adminApp) Run() {
+	// 不在这里启动任务,如果要使用任务模块,需要调用task.StartTask,否则任务不会执行.
 	logs.Debug("now we don't start tasks here, if you use task module," +
 		" please invoke task.StartTask, or task will not be executed")
 	addr := BConfig.Listen.AdminAddr
 	if BConfig.Listen.AdminPort != 0 {
+		// 返回一个地址, 如果是ipv4 默认情况下大概就是 127.0.0.1:8088
 		addr = net.JoinHostPort(BConfig.Listen.AdminAddr, fmt.Sprintf("%d", BConfig.Listen.AdminPort))
 	}
 	logs.Info("Admin server Running on %s", addr)
