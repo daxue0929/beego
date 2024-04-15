@@ -37,7 +37,7 @@ func registerDefaultErrorHandler() error {
 		"413": payloadTooLarge,
 	}
 	for e, h := range m {
-		if _, ok := ErrorMaps[e]; !ok {
+		if _, ok := ErrorMaps[e]; !ok { //这么判断一下, ErrorMaps中不存在的httpCode,才加进去
 			ErrorHandler(e, h)
 		}
 	}
@@ -47,9 +47,10 @@ func registerDefaultErrorHandler() error {
 func registerSession() error {
 	if BConfig.WebConfig.Session.SessionOn {
 		var err error
+		//从外置的配置文件取配置的属性值的时候, 看着是字符串,但是应该是json字符串..看server/web/hooks.go:68
 		sessionConfig, err := AppConfig.String("sessionConfig")
 		conf := new(session.ManagerConfig)
-		if sessionConfig == "" || err != nil {
+		if sessionConfig == "" || err != nil { // 没有取出来, 就还用BConfig中的默认值, 初始化一个ManagerConfig
 			conf.CookieName = BConfig.WebConfig.Session.SessionName
 			conf.EnableSetCookie = BConfig.WebConfig.Session.SessionAutoSetCookie
 			conf.Gclifetime = BConfig.WebConfig.Session.SessionGCMaxLifetime
@@ -64,6 +65,7 @@ func registerSession() error {
 			conf.CookieSameSite = BConfig.WebConfig.Session.SessionCookieSameSite
 			conf.SessionIDPrefix = BConfig.WebConfig.Session.SessionIDPrefix
 		} else {
+			// 如果从外置的配置文件取sessionConfig配置, 能取得出来. 就反序列化出来到ManagerConfig上, json的字符串
 			if err = json.Unmarshal([]byte(sessionConfig), conf); err != nil {
 				return err
 			}
